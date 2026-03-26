@@ -195,18 +195,44 @@
         {
           "directionId": "nagoya",
           "directionName": "名古屋方面",
-          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
-            { "type": "stairs", "name": "中央改札口方面 階段", "car": 3, "door": 2, "note": "※要実地確認" },
-            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
-          ]}]
+          "formations": [
+            { "cars": 4, "label": "4両編成", "facilities": [
+              { "type": "escalator", "name": "改札口 エスカレーター", "car": 1, "door": 3 },
+              { "type": "stairs", "name": "改札口 階段", "car": 2, "door": 3 },
+              { "type": "elevator", "name": "改札口 エレベーター", "car": 3, "door": 2 }
+            ]},
+            { "cars": 6, "label": "6両編成", "facilities": [
+              { "type": "escalator", "name": "改札口 エスカレーター", "car": 1, "door": 1 },
+              { "type": "stairs", "name": "改札口 階段", "car": 2, "door": 3 },
+              { "type": "elevator", "name": "改札口 エレベーター", "car": 3, "door": 2 }
+            ]},
+            { "cars": 8, "label": "8両編成", "facilities": [
+              { "type": "escalator", "name": "改札口 エスカレーター", "car": 3, "door": 1 },
+              { "type": "stairs", "name": "改札口 階段", "car": 4, "door": 3 },
+              { "type": "elevator", "name": "改札口 エレベーター", "car": 5, "door": 2 }
+            ]}
+          ]
         },
         {
           "directionId": "toyohashi",
           "directionName": "豊橋方面",
-          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
-            { "type": "stairs", "name": "中央改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" },
-            { "type": "elevator", "name": "エレベーター", "car": 6, "door": 2, "note": "※要実地確認" }
-          ]}]
+          "formations": [
+            { "cars": 4, "label": "4両編成", "facilities": [
+              { "type": "escalator", "name": "改札口 エスカレーター", "car": 1, "door": 3 },
+              { "type": "stairs", "name": "改札口 階段", "car": 2, "door": 1 },
+              { "type": "elevator", "name": "改札口 エレベーター", "car": 3, "door": 2 }
+            ]},
+            { "cars": 6, "label": "6両編成", "facilities": [
+              { "type": "escalator", "name": "改札口 エスカレーター", "car": 2, "door": 1 },
+              { "type": "stairs", "name": "改札口 階段", "car": 4, "door": 1 },
+              { "type": "elevator", "name": "改札口 エレベーター", "car": 5, "door": 2 }
+            ]},
+            { "cars": 8, "label": "8両編成", "facilities": [
+              { "type": "escalator", "name": "改札口 エスカレーター", "car": 2, "door": 1 },
+              { "type": "stairs", "name": "改札口 階段", "car": 4, "door": 1 },
+              { "type": "elevator", "name": "改札口 エレベーター", "car": 5, "door": 2 }
+            ]}
+          ]
         }
       ]
     },
@@ -442,18 +468,50 @@
         {
           "directionId": "nagoya",
           "directionName": "名古屋方面",
-          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
-            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" },
-            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
-          ]}]
+          "formations": [
+            { "cars": 4, "label": "4両編成", "facilities": [
+              { "type": "stairs", "name": "北口・南口 階段", "car": 1, "door": 1 },
+              { "type": "escalator", "name": "北口・南口 エスカレーター", "car": 1, "door": 2 },
+              { "type": "stairs", "name": "北口・南口 階段", "car": 3, "door": 2 },
+              { "type": "elevator", "name": "北口・南口 エレベーター", "car": 3, "door": 2 }
+            ]},
+            { "cars": 6, "label": "6両編成", "facilities": [
+              { "type": "stairs", "name": "北口・南口 階段", "car": 1, "door": 1 },
+              { "type": "escalator", "name": "北口・南口 エスカレーター", "car": 1, "door": 2 },
+              { "type": "stairs", "name": "北口・南口 階段", "car": 3, "door": 2 },
+              { "type": "elevator", "name": "北口・南口 エレベーター", "car": 3, "door": 2 }
+            ]},
+            { "cars": 8, "label": "8両編成", "facilities": [
+              { "type": "stairs", "name": "北口・南口 階段", "car": 3, "door": 1 },
+              { "type": "escalator", "name": "北口・南口 エスカレーター", "car": 3, "door": 2 },
+              { "type": "stairs", "name": "北口・南口 階段", "car": 5, "door": 2 },
+              { "type": "elevator", "name": "北口・南口 エレベーター", "car": 5, "door": 1 }
+            ]}
+          ]
         },
         {
           "directionId": "toyohashi",
           "directionName": "豊橋方面",
-          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
-            { "type": "stairs", "name": "改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" },
-            { "type": "elevator", "name": "エレベーター", "car": 6, "door": 2, "note": "※要実地確認" }
-          ]}]
+          "formations": [
+            { "cars": 4, "label": "4両編成", "facilities": [
+              { "type": "stairs", "name": "北口・南口 階段", "car": 1, "door": 1 },
+              { "type": "escalator", "name": "北口・南口 エスカレーター", "car": 1, "door": 2 },
+              { "type": "stairs", "name": "北口・南口 階段", "car": 3, "door": 2 },
+              { "type": "elevator", "name": "北口・南口 エレベーター", "car": 3, "door": 2 }
+            ]},
+            { "cars": 6, "label": "6両編成", "facilities": [
+              { "type": "stairs", "name": "北口・南口 階段", "car": 1, "door": 1 },
+              { "type": "escalator", "name": "北口・南口 エスカレーター", "car": 1, "door": 2 },
+              { "type": "stairs", "name": "北口・南口 階段", "car": 3, "door": 2 },
+              { "type": "elevator", "name": "北口・南口 エレベーター", "car": 3, "door": 2 }
+            ]},
+            { "cars": 8, "label": "8両編成", "facilities": [
+              { "type": "stairs", "name": "北口・南口 階段", "car": 3, "door": 1 },
+              { "type": "escalator", "name": "北口・南口 エスカレーター", "car": 3, "door": 2 },
+              { "type": "stairs", "name": "北口・南口 階段", "car": 5, "door": 2 },
+              { "type": "elevator", "name": "北口・南口 エレベーター", "car": 5, "door": 1 }
+            ]}
+          ]
         }
       ]
     },
@@ -629,18 +687,50 @@
         {
           "directionId": "maibara",
           "directionName": "米原方面",
-          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
-            { "type": "stairs", "name": "中央改札口方面 階段", "car": 3, "door": 2, "note": "※要実地確認" },
-            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
-          ]}]
+          "formations": [
+            { "cars": 4, "label": "4両編成", "facilities": [
+              { "type": "stairs", "name": "中央改札口 階段", "car": 2, "door": 2 },
+              { "type": "stairs", "name": "中央改札口 階段", "car": 4, "door": 3 },
+              { "type": "escalator", "name": "中央改札口 エスカレーター", "car": 4, "door": 3 },
+              { "type": "elevator", "name": "中央改札口 エレベーター", "car": 6, "door": 3 }
+            ]},
+            { "cars": 6, "label": "6両編成", "facilities": [
+              { "type": "stairs", "name": "中央改札口 階段", "car": 2, "door": 2 },
+              { "type": "stairs", "name": "中央改札口 階段", "car": 4, "door": 3 },
+              { "type": "escalator", "name": "中央改札口 エスカレーター", "car": 4, "door": 3 },
+              { "type": "elevator", "name": "中央改札口 エレベーター", "car": 6, "door": 3 }
+            ]},
+            { "cars": 8, "label": "8両編成", "facilities": [
+              { "type": "stairs", "name": "中央改札口 階段", "car": 4, "door": 2 },
+              { "type": "stairs", "name": "中央改札口 階段", "car": 6, "door": 3 },
+              { "type": "escalator", "name": "中央改札口 エスカレーター", "car": 6, "door": 3 },
+              { "type": "elevator", "name": "中央改札口 エレベーター", "car": 8, "door": 3 }
+            ]}
+          ]
         },
         {
           "directionId": "toyohashi",
           "directionName": "豊橋方面",
-          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
-            { "type": "stairs", "name": "中央改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" },
-            { "type": "elevator", "name": "エレベーター", "car": 6, "door": 2, "note": "※要実地確認" }
-          ]}]
+          "formations": [
+            { "cars": 4, "label": "4両編成", "facilities": [
+              { "type": "stairs", "name": "中央改札口 階段", "car": 2, "door": 2 },
+              { "type": "stairs", "name": "中央改札口 階段", "car": 4, "door": 3 },
+              { "type": "escalator", "name": "中央改札口 エスカレーター", "car": 4, "door": 3 },
+              { "type": "elevator", "name": "中央改札口 エレベーター", "car": 6, "door": 3 }
+            ]},
+            { "cars": 6, "label": "6両編成", "facilities": [
+              { "type": "stairs", "name": "中央改札口 階段", "car": 2, "door": 2 },
+              { "type": "stairs", "name": "中央改札口 階段", "car": 4, "door": 3 },
+              { "type": "escalator", "name": "中央改札口 エスカレーター", "car": 4, "door": 3 },
+              { "type": "elevator", "name": "中央改札口 エレベーター", "car": 6, "door": 3 }
+            ]},
+            { "cars": 8, "label": "8両編成", "facilities": [
+              { "type": "stairs", "name": "中央改札口 階段", "car": 4, "door": 2 },
+              { "type": "stairs", "name": "中央改札口 階段", "car": 6, "door": 3 },
+              { "type": "escalator", "name": "中央改札口 エスカレーター", "car": 6, "door": 3 },
+              { "type": "elevator", "name": "中央改札口 エレベーター", "car": 8, "door": 3 }
+            ]}
+          ]
         }
       ]
     },
