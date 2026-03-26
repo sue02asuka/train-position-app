@@ -9,9 +9,20 @@
         {
           "directionId": "ogaki",
           "directionName": "大垣・米原方面",
-          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
-            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
-          ]}]
+          "formations": [
+            { "cars": 4, "label": "4両編成", "facilities": [
+              { "type": "stairs", "name": "出口改札・新幹線乗り換え 階段", "car": 2, "door": 2 },
+              { "type": "stairs", "name": "出口改札・新幹線乗り換え 階段", "car": 4, "door": 2 },
+              { "type": "escalator", "name": "出口改札・新幹線乗り換え エスカレーター", "car": 4, "door": 2 },
+              { "type": "elevator", "name": "出口改札・新幹線乗り換え エレベーター", "car": 4, "door": 2 }
+            ]},
+            { "cars": 6, "label": "6両編成", "facilities": [
+              { "type": "stairs", "name": "出口改札・新幹線乗り換え 階段", "car": 2, "door": 2 },
+              { "type": "stairs", "name": "出口改札・新幹線乗り換え 階段", "car": 4, "door": 2 },
+              { "type": "escalator", "name": "出口改札・新幹線乗り換え エスカレーター", "car": 4, "door": 2 },
+              { "type": "elevator", "name": "出口改札・新幹線乗り換え エレベーター", "car": 4, "door": 2 }
+            ]}
+          ]
         }
       ]
     },
@@ -473,10 +484,30 @@
         {
           "directionId": "toyohashi",
           "directionName": "豊橋方面",
-          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
-            { "type": "stairs", "name": "中央改札口方面 階段", "car": 3, "door": 2, "note": "※要実地確認" },
-            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
-          ]}]
+          "formations": [
+            { "cars": 4, "label": "4両編成", "facilities": [
+              { "type": "elevator", "name": "桜通口・中央北口 エレベーター", "car": 1, "door": 1 },
+              { "type": "escalator", "name": "桜通口・中央北口 エスカレーター", "car": 1, "door": 1 },
+              { "type": "stairs", "name": "桜通口・中央北口 階段", "car": 2, "door": 2 },
+              { "type": "stairs", "name": "中央改札・広小路口 階段", "car": 4, "door": 3 }
+            ]},
+            { "cars": 6, "label": "6両編成", "facilities": [
+              { "type": "elevator", "name": "桜通口・中央北口 エレベーター", "car": 1, "door": 1 },
+              { "type": "escalator", "name": "桜通口・中央北口 エスカレーター", "car": 1, "door": 1 },
+              { "type": "stairs", "name": "桜通口・中央北口 階段", "car": 2, "door": 2 },
+              { "type": "stairs", "name": "中央改札 階段", "car": 4, "door": 3 },
+              { "type": "stairs", "name": "中央改札 階段", "car": 6, "door": 2 },
+              { "type": "stairs", "name": "広小路口・南通路 階段", "car": 6, "door": 3 }
+            ]},
+            { "cars": 8, "label": "8両編成", "facilities": [
+              { "type": "escalator", "name": "桜通口・中央北口 エスカレーター", "car": 2, "door": 1 },
+              { "type": "elevator", "name": "桜通口・中央北口 エレベーター", "car": 3, "door": 1 },
+              { "type": "stairs", "name": "桜通口・中央北口 階段", "car": 4, "door": 2 },
+              { "type": "stairs", "name": "中央改札 階段", "car": 6, "door": 3 },
+              { "type": "stairs", "name": "中央改札 階段", "car": 8, "door": 2 },
+              { "type": "stairs", "name": "広小路口・南通路 階段", "car": 8, "door": 3 }
+            ]}
+          ]
         },
         {
           "directionId": "ogaki",
