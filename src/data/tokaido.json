@@ -1,0 +1,794 @@
+{
+  "lineId": "tokaido",
+  "lineName": "東海道本線",
+  "stations": [
+    {
+      "stationId": "toyohashi",
+      "stationName": "豊橋",
+      "directions": [
+        {
+          "directionId": "ogaki",
+          "directionName": "大垣・米原方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "nishikozakai",
+      "stationName": "西小坂井",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "aichimitsu",
+      "stationName": "愛知御津",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "mikawaootsuka",
+      "stationName": "三河大塚",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "mikawamiiya",
+      "stationName": "三河三谷",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "gamagori",
+      "stationName": "蒲郡",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "mikane",
+      "stationName": "三ヶ根",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "koda",
+      "stationName": "幸田",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "aimi",
+      "stationName": "相見",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "okazaki",
+      "stationName": "岡崎",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "中央改札口方面 階段", "car": 3, "door": 2, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "中央改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 6, "door": 2, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "nishiokazaki",
+      "stationName": "西岡崎",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "anjo",
+      "stationName": "安城",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "mikawananjo",
+      "stationName": "三河安城",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "kariya",
+      "stationName": "刈谷",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 2, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "nodashimmachi",
+      "stationName": "野田新町",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "kyowa",
+      "stationName": "共和",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "obu",
+      "stationName": "大府",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "minamiobu",
+      "stationName": "南大高",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "obu-daka",
+      "stationName": "大高",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "kasadera",
+      "stationName": "笠寺",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "atsuta",
+      "stationName": "熱田",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "kanayama",
+      "stationName": "金山",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 6, "door": 2, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "odogawa",
+      "stationName": "尾頭橋",
+      "directions": [
+        {
+          "directionId": "nagoya",
+          "directionName": "名古屋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "nagoya",
+      "stationName": "名古屋",
+      "directions": [
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "中央改札口方面 階段", "car": 3, "door": 2, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "ogaki",
+          "directionName": "大垣方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "中央改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 6, "door": 2, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "biwajima",
+      "stationName": "枇杷島",
+      "directions": [
+        {
+          "directionId": "ogaki",
+          "directionName": "大垣方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "kiyosu",
+      "stationName": "清洲",
+      "directions": [
+        {
+          "directionId": "ogaki",
+          "directionName": "大垣方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "inazawa",
+      "stationName": "稲沢",
+      "directions": [
+        {
+          "directionId": "ogaki",
+          "directionName": "大垣方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "owariichinomiya",
+      "stationName": "尾張一宮",
+      "directions": [
+        {
+          "directionId": "ogaki",
+          "directionName": "大垣方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 2, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 6, "door": 2, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "kisogawa",
+      "stationName": "木曽川",
+      "directions": [
+        {
+          "directionId": "ogaki",
+          "directionName": "大垣方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "gifu",
+      "stationName": "岐阜",
+      "directions": [
+        {
+          "directionId": "maibara",
+          "directionName": "米原方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "中央改札口方面 階段", "car": 3, "door": 2, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "中央改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 6, "door": 2, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "nishigifu",
+      "stationName": "西岐阜",
+      "directions": [
+        {
+          "directionId": "maibara",
+          "directionName": "米原方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "hozumi",
+      "stationName": "穂積",
+      "directions": [
+        {
+          "directionId": "maibara",
+          "directionName": "米原方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 6, "label": "6両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 4, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "ogaki",
+      "stationName": "大垣",
+      "directions": [
+        {
+          "directionId": "maibara",
+          "directionName": "米原方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 4, "door": 2, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "tarui",
+      "stationName": "垂井",
+      "directions": [
+        {
+          "directionId": "maibara",
+          "directionName": "米原方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "sekigahara",
+      "stationName": "関ヶ原",
+      "directions": [
+        {
+          "directionId": "maibara",
+          "directionName": "米原方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "kashiwabara",
+      "stationName": "柏原",
+      "directions": [
+        {
+          "directionId": "maibara",
+          "directionName": "米原方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "ominagasaka",
+      "stationName": "近江長岡",
+      "directions": [
+        {
+          "directionId": "maibara",
+          "directionName": "米原方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "samegai",
+      "stationName": "醒ヶ井",
+      "directions": [
+        {
+          "directionId": "maibara",
+          "directionName": "米原方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" }
+          ]}]
+        },
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 3, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    },
+    {
+      "stationId": "maibara",
+      "stationName": "米原",
+      "directions": [
+        {
+          "directionId": "toyohashi",
+          "directionName": "豊橋方面",
+          "formations": [{ "cars": 4, "label": "4両編成", "facilities": [
+            { "type": "stairs", "name": "改札口方面 階段", "car": 2, "door": 1, "note": "※要実地確認" },
+            { "type": "elevator", "name": "エレベーター", "car": 1, "door": 1, "note": "※要実地確認" }
+          ]}]
+        }
+      ]
+    }
+  ]
+}
