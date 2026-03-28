@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "start": "cross-env NODE_OPTIONS=--conditions=require expo start",
+    "android": "cross-env NODE_OPTIONS=--conditions=require expo start --android",
+    "ios": "cross-env NODE_OPTIONS=--conditions=require expo start --ios",
+    "web": "cross-env NODE_OPTIONS=--conditions=require expo start --web"
+  },
+  "engines": {
+    "node": ">=18 <21"
   },
   "dependencies": {
     "@expo/metro-runtime": "~4.0.1",
@@ -27,6 +30,7 @@
   },
   "devDependencies": {
     "@types/react": "~18.3.12",
+    "cross-env": "^7.0.3",
     "typescript": "~5.9.2"
   },
   "private": true

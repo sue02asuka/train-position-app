@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
   SafeAreaView, Alert, ActivityIndicator,
@@ -27,6 +27,11 @@ export default function PostScreen() {
   const [car, setCar] = useState(1);
   const [door, setDoor] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    supabase.rpc('get_my_is_admin').then(({ data }) => setIsAdmin(data === true));
+  }, []);
 
   const reset = () => {
     setStep('station');
@@ -46,53 +51,66 @@ export default function PostScreen() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('ログインが必要です');
 
-      // 重複チェック: 同じユーザーが同じ駅・方面・編成に既に投稿していないか確認
-      const { data: existing } = await supabase
-        .from('submissions')
-        .select('facilities')
-        .eq('user_id', user.id)
-        .eq('station_id', selectedStation.stationId)
-        .eq('direction_id', selectedDirection.directionId)
-        .eq('cars', selectedCars);
+      // 重複チェック（管理者はスキップ）
+      if (!isAdmin) {
+        const { data: existing } = await supabase
+          .from('submissions')
+          .select('facilities')
+          .eq('user_id', user.id)
+          .eq('station_id', selectedStation.stationId)
+          .eq('direction_id', selectedDirection.directionId)
+          .eq('cars', selectedCars);
 
-      if (existing && existing.length > 0) {
-        // 同じ設備（号車・ドア・種類）の投稿が既にあるか確認
-        const isDuplicate = existing.some((row: any) => {
-          const facs = Array.isArray(row.facilities) ? row.facilities : [];
-          return facs.some((f: any) =>
-            f.type === facilityType && f.car === car && f.door === door
-          );
-        });
+        if (existing && existing.length > 0) {
+          const isDuplicate = existing.some((row: any) => {
+            const facs = Array.isArray(row.facilities) ? row.facilities : [];
+            return facs.some((f: any) =>
+              f.type === facilityType && f.car === car && f.door === door
+            );
+          });
 
-        if (isDuplicate) {
-          const msg = `この設備はすでに投稿済みです。\n（${selectedStation.stationName} ${selectedDirection.directionName} ${selectedCars}両 ${FACILITY_OPTIONS.find(f => f.type === facilityType)?.label} ${car}号車${door}番目ドア）`;
-          if (typeof window !== 'undefined') {
-            window.alert(msg);
-          } else {
-            Alert.alert('投稿済み', msg);
+          if (isDuplicate) {
+            const msg = `この設備はすでに投稿済みです。\n（${selectedStation.stationName} ${selectedDirection.directionName} ${selectedCars}両 ${FACILITY_OPTIONS.find(f => f.type === facilityType)?.label} ${car}号車${door}番目ドア）`;
+            if (typeof window !== 'undefined') {
+              window.alert(msg);
+            } else {
+              Alert.alert('投稿済み', msg);
+            }
+            return;
           }
-          return;
         }
       }
 
+      const facilityData = [{
+        type: facilityType,
+        name: facilityName || `${selectedStation.stationName} ${FACILITY_OPTIONS.find(f => f.type === facilityType)?.label}`,
+        car,
+        door,
+      }];
+
+      // 管理者は即時承認、一般ユーザーは審査待ち
       const { error } = await supabase.from('submissions').insert({
         user_id: user.id,
         station_id: selectedStation.stationId,
         direction_id: selectedDirection.directionId,
         cars: selectedCars,
-        facilities: [{ type: facilityType, name: facilityName || `${selectedStation.stationName} ${FACILITY_OPTIONS.find(f => f.type === facilityType)?.label}`, car, door }],
-        status: 'pending',
+        facilities: facilityData,
+        status: isAdmin ? 'approved' : 'pending',
       });
       if (error) throw error;
 
       // ポイント加算
       await supabase.rpc('increment_points', { uid: user.id, amount: 10 }).maybeSingle();
 
+      const successMsg = isAdmin
+        ? '投稿完了！管理者投稿のため即時反映されました✅'
+        : '投稿完了！＋10ポイント獲得しました🎉';
+
       if (typeof window !== 'undefined') {
-        window.alert('投稿完了！＋10ポイント獲得しました🎉');
+        window.alert(successMsg);
         reset();
       } else {
-        Alert.alert('投稿完了！', '＋10ポイント獲得しました🎉', [{ text: 'OK', onPress: reset }]);
+        Alert.alert('投稿完了！', successMsg, [{ text: 'OK', onPress: reset }]);
       }
     } catch (e: any) {
       Alert.alert('エラー', e.message);

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
 import type { Station, Direction, Formation, FacilityType, Facility } from '../types/station';
 import { supabase } from '../config/supabase';
+import TrainDiagram from '../components/TrainDiagram';
 
 interface Props {
   station: Station;
@@ -88,21 +89,27 @@ export default function ResultScreen({ station, direction, formation, onBack }: 
               <Text style={styles.emptySubText}>この駅・方面のデータはまだ登録されていません</Text>
             </View>
           ) : (
-            facilities.map((f, i) => (
-              <View key={i} style={[styles.card, { borderLeftColor: FACILITY_COLORS[f.type] }]}>
-                <Text style={styles.facilityIcon}>{FACILITY_ICONS[f.type]}</Text>
-                <View style={styles.cardBody}>
-                  <Text style={[styles.facilityType, { color: FACILITY_COLORS[f.type] }]}>
-                    {FACILITY_LABELS[f.type]}
-                  </Text>
-                  <Text style={styles.facilityName}>{f.name}</Text>
-                  <Text style={styles.position}>
-                    {f.car}号車 · {f.door}番目のドア
-                  </Text>
-                  {f.note && <Text style={styles.note}>{f.note}</Text>}
+            <>
+              {/* 車両図 */}
+              <TrainDiagram totalCars={formation.cars} facilities={facilities} />
+
+              {/* 設備カード一覧 */}
+              {facilities.map((f, i) => (
+                <View key={i} style={[styles.card, { borderLeftColor: FACILITY_COLORS[f.type] }]}>
+                  <Text style={styles.facilityIcon}>{FACILITY_ICONS[f.type]}</Text>
+                  <View style={styles.cardBody}>
+                    <Text style={[styles.facilityType, { color: FACILITY_COLORS[f.type] }]}>
+                      {FACILITY_LABELS[f.type]}
+                    </Text>
+                    <Text style={styles.facilityName}>{f.name}</Text>
+                    <Text style={styles.position}>
+                      {f.car}号車 · {f.door}番目のドア
+                    </Text>
+                    {f.note && <Text style={styles.note}>{f.note}</Text>}
+                  </View>
                 </View>
-              </View>
-            ))
+              ))}
+            </>
           )}
         </ScrollView>
       )}
