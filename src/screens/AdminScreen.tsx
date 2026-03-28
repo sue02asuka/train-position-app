@@ -4,6 +4,17 @@ import {
   ScrollView, Alert, TextInput, ActivityIndicator,
 } from 'react-native';
 import { supabase } from '../config/supabase';
+import stationsData from '../data/tokaido.json';
+
+// 駅ID → 漢字駅名 / 方面ID → 漢字方面名 のマップ
+const stationNameMap: Record<string, string> = {};
+const directionNameMap: Record<string, string> = {};
+(stationsData as any).stations.forEach((s: any) => {
+  stationNameMap[s.stationId] = s.stationName;
+  s.directions.forEach((d: any) => {
+    directionNameMap[d.directionId] = d.directionName;
+  });
+});
 
 type AdminTab = 'submissions' | 'users';
 type StatusFilter = 'pending' | 'approved' | 'rejected';
@@ -95,22 +106,20 @@ export default function AdminScreen() {
   };
 
   // ===== 削除 =====
-  const handleDelete = async (sub: AdminSubmission) => {
+  const handleDelete = (sub: AdminSubmission) => {
     const msg = 'この投稿を完全に削除しますか？';
     const doDelete = async () => {
-      const { error } = await supabase.from('submissions').delete().eq('id', sub.id);
+      // SECURITY DEFINER関数でRLSをバイパスして削除
+      const { error } = await supabase.rpc('admin_delete_submission', {
+        p_submission_id: sub.id,
+      });
       if (error) { Alert.alert('エラー', error.message); return; }
       setSubmissions(prev => prev.filter(s => s.id !== sub.id));
     };
-
-    if (typeof window !== 'undefined') {
-      if (window.confirm(msg)) await doDelete();
-    } else {
-      Alert.alert('削除確認', msg, [
-        { text: 'キャンセル', style: 'cancel' },
-        { text: '削除する', style: 'destructive', onPress: doDelete },
-      ]);
-    }
+    Alert.alert('削除確認', msg, [
+      { text: 'キャンセル', style: 'cancel' },
+      { text: '削除する', style: 'destructive', onPress: doDelete },
+    ]);
   };
 
   // ===== ポイント設定 =====
@@ -188,9 +197,11 @@ export default function AdminScreen() {
                 <View key={sub.id} style={styles.subCard}>
                   {/* 投稿情報 */}
                   <View style={styles.subInfo}>
-                    <Text style={styles.subStation}>{sub.station_id}</Text>
+                    <Text style={styles.subStation}>
+                      {stationNameMap[sub.station_id] ?? sub.station_id}
+                    </Text>
                     <Text style={styles.subMeta}>
-                      {sub.direction_id} › {sub.cars}両
+                      {directionNameMap[sub.direction_id] ?? sub.direction_id} › {sub.cars}両
                     </Text>
                     {sub.facilities?.[0] && (
                       <Text style={styles.subFacility}>

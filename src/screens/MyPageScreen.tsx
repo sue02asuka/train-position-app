@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   },
   badgeCardLocked: { backgroundColor: '#f9f9f9', opacity: 0.6 },
   badgeIcon: { fontSize: 36 },
-  badgeIconLocked: { filter: 'grayscale(1)' } as any,
+  badgeIconLocked: { opacity: 0.3 },
   badgeName: { fontSize: 14, fontWeight: 'bold', color: '#333' },
   badgeNameLocked: { color: '#aaa' },
   badgeCondition: { fontSize: 11, color: '#999', textAlign: 'center' },
