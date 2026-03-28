@@ -46,6 +46,35 @@ export default function PostScreen() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('ログインが必要です');
 
+      // 重複チェック: 同じユーザーが同じ駅・方面・編成に既に投稿していないか確認
+      const { data: existing } = await supabase
+        .from('submissions')
+        .select('facilities')
+        .eq('user_id', user.id)
+        .eq('station_id', selectedStation.stationId)
+        .eq('direction_id', selectedDirection.directionId)
+        .eq('cars', selectedCars);
+
+      if (existing && existing.length > 0) {
+        // 同じ設備（号車・ドア・種類）の投稿が既にあるか確認
+        const isDuplicate = existing.some((row: any) => {
+          const facs = Array.isArray(row.facilities) ? row.facilities : [];
+          return facs.some((f: any) =>
+            f.type === facilityType && f.car === car && f.door === door
+          );
+        });
+
+        if (isDuplicate) {
+          const msg = `この設備はすでに投稿済みです。\n（${selectedStation.stationName} ${selectedDirection.directionName} ${selectedCars}両 ${FACILITY_OPTIONS.find(f => f.type === facilityType)?.label} ${car}号車${door}番目ドア）`;
+          if (typeof window !== 'undefined') {
+            window.alert(msg);
+          } else {
+            Alert.alert('投稿済み', msg);
+          }
+          return;
+        }
+      }
+
       const { error } = await supabase.from('submissions').insert({
         user_id: user.id,
         station_id: selectedStation.stationId,
