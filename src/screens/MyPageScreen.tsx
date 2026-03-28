@@ -203,14 +203,13 @@ export default function MyPageScreen() {
           submissions.map((sub) => {
             const isExpanded = expandedId === sub.id;
             return (
-              <TouchableOpacity
-                key={sub.id}
-                style={styles.subCard}
-                onPress={() => setExpandedId(isExpanded ? null : sub.id)}
-                activeOpacity={0.85}
-              >
-                {/* カードヘッダー（常に表示） */}
-                <View style={styles.subHeader}>
+              <View key={sub.id} style={styles.subCard}>
+                {/* ヘッダー部分のみタップで展開・折りたたみ */}
+                <TouchableOpacity
+                  style={styles.subHeader}
+                  onPress={() => setExpandedId(isExpanded ? null : sub.id)}
+                  activeOpacity={0.7}
+                >
                   <View style={styles.subInfo}>
                     <View style={[styles.statusBadge,
                       sub.status === 'approved' ? styles.statusApproved : styles.statusPending
@@ -235,7 +234,7 @@ export default function MyPageScreen() {
                     </Text>
                   </View>
                   <Text style={styles.expandIcon}>{isExpanded ? '▲' : '▼'}</Text>
-                </View>
+                </TouchableOpacity>
 
                 {/* 展開エリア：車両図＋取り消しボタン */}
                 {isExpanded && (
@@ -247,16 +246,13 @@ export default function MyPageScreen() {
                     />
                     <TouchableOpacity
                       style={styles.deleteButton}
-                      onPress={(e) => {
-                        e.stopPropagation?.();
-                        handleDelete(sub);
-                      }}
+                      onPress={() => handleDelete(sub)}
                     >
                       <Text style={styles.deleteText}>🗑 この投稿を取り消す</Text>
                     </TouchableOpacity>
                   </View>
                 )}
-              </TouchableOpacity>
+              </View>
             );
           })
         )}
