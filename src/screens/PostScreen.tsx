@@ -7,7 +7,7 @@ import { supabase } from '../config/supabase';
 import type { Station, Direction, FacilityType } from '../types/station';
 import stationsData from '../data/tokaido.json';
 
-const stations: Station[] = stationsData as Station[];
+const stations: Station[] = (stationsData as any).stations as Station[];
 
 const FACILITY_OPTIONS: { type: FacilityType; label: string; icon: string }[] = [
   { type: 'stairs', label: '階段', icon: '🪜' },
@@ -59,7 +59,12 @@ export default function PostScreen() {
       // ポイント加算
       await supabase.rpc('increment_points', { uid: user.id, amount: 10 }).maybeSingle();
 
-      Alert.alert('投稿完了！', '＋10ポイント獲得しました🎉', [{ text: 'OK', onPress: reset }]);
+      if (typeof window !== 'undefined') {
+        window.alert('投稿完了！＋10ポイント獲得しました🎉');
+        reset();
+      } else {
+        Alert.alert('投稿完了！', '＋10ポイント獲得しました🎉', [{ text: 'OK', onPress: reset }]);
+      }
     } catch (e: any) {
       Alert.alert('エラー', e.message);
     } finally {
