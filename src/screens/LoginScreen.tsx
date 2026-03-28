@@ -1,25 +1,64 @@
-import { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
-import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri } from 'expo-auth-session';
+import { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, Linking, Platform } from 'react-native';
 import { supabase } from '../config/supabase';
 
-WebBrowser.maybeCompleteAuthSession();
+// URLのフラグメントまたはクエリからパラメータを取得するヘルパー
+function parseParams(url: string): Record<string, string> {
+  const result: Record<string, string> = {};
+  const fragment = url.includes('#') ? url.split('#')[1] : '';
+  const query = url.includes('?') ? url.split('?')[1]?.split('#')[0] : '';
+  [fragment, query].forEach(part => {
+    if (!part) return;
+    part.split('&').forEach(pair => {
+      const [key, val] = pair.split('=');
+      if (key && val) result[decodeURIComponent(key)] = decodeURIComponent(val);
+    });
+  });
+  return result;
+}
 
 export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    // ディープリンクのコールバックを受け取る
+    const subscription = Linking.addEventListener('url', async ({ url }) => {
+      if (url.startsWith('trainposition://auth/callback')) {
+        const params = parseParams(url);
+        if (params.access_token && params.refresh_token) {
+          await supabase.auth.setSession({
+            access_token: params.access_token,
+            refresh_token: params.refresh_token,
+          });
+        }
+      }
+    });
+    return () => subscription.remove();
+  }, []);
+
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      const redirectTo = makeRedirectUri();
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo },
-      });
-      if (error) throw error;
-      if (data?.url) {
-        await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
+      if (Platform.OS === 'web') {
+        // Web: Supabaseが自動でリダイレクト処理する
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: window.location.origin,
+          },
+        });
+        if (error) throw error;
+      } else {
+        // Native: ディープリンクで戻る
+        const redirectTo = 'trainposition://auth/callback';
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo },
+        });
+        if (error) throw error;
+        if (data?.url) {
+          await Linking.openURL(data.url);
+        }
       }
     } catch (e: any) {
       Alert.alert('ログインエラー', e.message);

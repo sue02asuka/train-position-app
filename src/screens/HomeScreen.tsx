@@ -7,7 +7,7 @@ import type { Station, Direction, Formation } from '../types/station';
 import stationsData from '../data/tokaido.json';
 import ResultScreen from './ResultScreen';
 
-const stations: Station[] = stationsData as Station[];
+const stations: Station[] = (stationsData as any).stations as Station[];
 
 type Step = 'station' | 'direction' | 'formation' | 'result';
 
