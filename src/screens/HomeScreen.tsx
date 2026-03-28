@@ -3,26 +3,52 @@ import {
   View, Text, StyleSheet, TouchableOpacity,
   ScrollView, SafeAreaView,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Station, Direction, Formation } from '../types/station';
 import stationsData from '../data/tokaido.json';
 import ResultScreen from './ResultScreen';
+import RouteSelectScreen from './RouteSelectScreen';
+import type { Route } from '../data/routes';
 
 const stations: Station[] = (stationsData as any).stations as Station[];
 
-type Step = 'station' | 'direction' | 'formation' | 'result';
+type Step = 'route' | 'station' | 'direction' | 'formation' | 'result';
 
 export default function HomeScreen() {
-  const [step, setStep] = useState<Step>('station');
+  const insets = useSafeAreaInsets();
+  const [step, setStep] = useState<Step>('route');
+  const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
   const [selectedStation, setSelectedStation] = useState<Station | null>(null);
   const [selectedDirection, setSelectedDirection] = useState<Direction | null>(null);
   const [selectedFormation, setSelectedFormation] = useState<Formation | null>(null);
 
   const reset = () => {
-    setStep('station');
+    setStep('route');
+    setSelectedRoute(null);
     setSelectedStation(null);
     setSelectedDirection(null);
     setSelectedFormation(null);
   };
+
+  const backToRoute = () => {
+    setStep('route');
+    setSelectedRoute(null);
+    setSelectedStation(null);
+    setSelectedDirection(null);
+    setSelectedFormation(null);
+  };
+
+  // 路線選択画面
+  if (step === 'route') {
+    return (
+      <RouteSelectScreen
+        onSelectRoute={(route) => {
+          setSelectedRoute(route);
+          setStep('station');
+        }}
+      />
+    );
+  }
 
   if (step === 'result' && selectedStation && selectedDirection && selectedFormation) {
     return (
@@ -38,8 +64,15 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       {/* ヘッダー */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>🚃 乗車位置ガイド</Text>
+      <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
+        <View>
+          <TouchableOpacity onPress={backToRoute}>
+            <Text style={styles.backText}>← 路線選択</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>
+            {selectedRoute?.icon} {selectedRoute?.routeName}
+          </Text>
+        </View>
         {step !== 'station' && (
           <TouchableOpacity onPress={reset}>
             <Text style={styles.resetText}>最初から</Text>
@@ -50,7 +83,7 @@ export default function HomeScreen() {
       {/* ステップ表示 */}
       <View style={styles.stepBar}>
         {['駅', '方面', '編成'].map((label, i) => {
-          const stepKeys: Step[] = ['station', 'direction', 'formation'];
+          const stepKeys: Step[] = ['station', 'direction', 'formation'] as Step[];
           const active = step === stepKeys[i];
           const done = stepKeys.indexOf(step) > i;
           return (
@@ -116,6 +149,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     backgroundColor: '#E65100', paddingHorizontal: 16, paddingVertical: 12,
   },
+  backText: { color: '#FFCCBC', fontSize: 12, marginBottom: 2 },
   headerTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   resetText: { color: '#fff', fontSize: 14 },
   stepBar: {

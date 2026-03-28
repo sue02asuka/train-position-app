@@ -14,6 +14,8 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
+  const [homeKey, setHomeKey] = useState(0);
+  const [postKey, setPostKey] = useState(0);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
@@ -37,14 +39,30 @@ export default function App() {
           >
             <Tab.Screen
               name="ホーム"
-              component={HomeScreen}
               options={{ tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>🚃</Text> }}
-            />
+              listeners={({ navigation }) => ({
+                tabPress: () => {
+                  if (navigation.isFocused()) {
+                    setHomeKey(k => k + 1);
+                  }
+                },
+              })}
+            >
+              {() => <HomeScreen key={homeKey} />}
+            </Tab.Screen>
             <Tab.Screen
               name="投稿"
-              component={PostScreen}
               options={{ tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>📝</Text> }}
-            />
+              listeners={({ navigation }) => ({
+                tabPress: () => {
+                  if (navigation.isFocused()) {
+                    setPostKey(k => k + 1);
+                  }
+                },
+              })}
+            >
+              {() => <PostScreen key={postKey} />}
+            </Tab.Screen>
             <Tab.Screen
               name="マイページ"
               component={MyPageScreen}
