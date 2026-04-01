@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 import { supabase } from '../config/supabase';
 import TrainDiagram from '../components/TrainDiagram';
 import stationsData from '../data/tokaido.json';
@@ -46,6 +48,7 @@ const ALL_BADGES = [
 ];
 
 export default function MyPageScreen() {
+  const insets = useSafeAreaInsets();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [email, setEmail] = useState('');
   const [approvedCount, setApprovedCount] = useState(0);
@@ -88,57 +91,53 @@ export default function MyPageScreen() {
     setSubmissions(subs ?? []);
   };
 
-  useEffect(() => { load(); }, []);
+  useFocusEffect(useCallback(() => { load(); }, []));
 
-  const handleDelete = async (sub: Submission) => {
+  const handleDelete = (sub: Submission) => {
     const refundPoints = sub.status === 'approved' ? 60 : 10;
-    // 管理者はポイント変動なし
     const msg = isAdmin
-      ? `この投稿を取り消しますか？\n（${sub.station_id} ${sub.direction_id} ${sub.cars}両）`
-      : `この投稿を取り消しますか？\n（${sub.station_id} ${sub.direction_id} ${sub.cars}両）\n\n⚠️ ${refundPoints}ポイント返却されます。`;
+      ? `この投稿を取り消しますか？\n（${stationNameMap[sub.station_id] ?? sub.station_id} ${sub.cars}両）`
+      : `この投稿を取り消しますか？\n（${stationNameMap[sub.station_id] ?? sub.station_id} ${sub.cars}両）\n\n⚠️ ${refundPoints}ポイント返却されます。`;
 
-    const confirm = typeof window !== 'undefined'
-      ? window.confirm(msg)
-      : await new Promise<boolean>((resolve) =>
-          Alert.alert('投稿を取り消す', msg, [
-            { text: 'キャンセル', style: 'cancel', onPress: () => resolve(false) },
-            { text: '取り消す', style: 'destructive', onPress: () => resolve(true) },
-          ])
-        );
+    Alert.alert('投稿を取り消す', msg, [
+      { text: 'キャンセル', style: 'cancel' },
+      {
+        text: '取り消す',
+        style: 'destructive',
+        onPress: async () => {
+          // 即座にリストから削除（楽観的更新）
+          setSubmissions(prev => prev.filter(s => s.id !== sub.id));
+          setExpandedId(null);
 
-    if (!confirm) return;
+          const { error } = await supabase.from('submissions').delete().eq('id', sub.id);
+          if (error) {
+            // 失敗したら元に戻す
+            setSubmissions(prev => [...prev, sub].sort((a, b) =>
+              new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            ));
+            Alert.alert('エラー', error.message);
+            return;
+          }
 
-    // 即座にリストから削除（楽観的更新）
-    setSubmissions(prev => prev.filter(s => s.id !== sub.id));
+          if (!isAdmin) {
+            await supabase.rpc('decrement_points', { uid: userId, amount: refundPoints });
+          }
 
-    const { error } = await supabase.from('submissions').delete().eq('id', sub.id);
-    if (error) {
-      // 失敗したら元に戻す
-      setSubmissions(prev => [...prev, sub].sort((a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      ));
-      Alert.alert('エラー', error.message);
-      return;
-    }
+          // ポイントを再取得
+          const { data } = await supabase
+            .from('users')
+            .select('nickname, points, badges')
+            .eq('id', userId)
+            .single();
+          if (data) setUserData(data);
 
-    if (!isAdmin) {
-      // 一般ユーザーのみポイントを返却
-      await supabase.rpc('decrement_points', { uid: userId, amount: refundPoints });
-    }
-
-    // ポイントのみ再取得（投稿リストは再取得しない）
-    const { data } = await supabase
-      .from('users')
-      .select('nickname, points, badges')
-      .eq('id', userId)
-      .single();
-    if (data) setUserData(data);
-
-    const successMsg = isAdmin
-      ? '投稿を取り消しました。'
-      : `投稿を取り消しました。${refundPoints}ポイント返却されました。`;
-    if (typeof window !== 'undefined') window.alert(successMsg);
-    else Alert.alert('完了', successMsg);
+          const successMsg = isAdmin
+            ? '投稿を取り消しました。'
+            : `投稿を取り消しました。${refundPoints}ポイント返却されました。`;
+          Alert.alert('完了', successMsg);
+        },
+      },
+    ]);
   };
 
   const handleLogout = async () => {
@@ -152,7 +151,7 @@ export default function MyPageScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <Text style={styles.headerTitle}>👤 マイページ</Text>
       </View>
 
@@ -268,7 +267,7 @@ export default function MyPageScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f5f5' },
-  header: { backgroundColor: '#4CAF50', paddingHorizontal: 16, paddingVertical: 12 },
+  header: { backgroundColor: '#4CAF50', paddingHorizontal: 16, paddingBottom: 12 },
   headerTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   scroll: { padding: 16, gap: 16 },
   card: {

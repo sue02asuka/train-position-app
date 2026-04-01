@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, SafeAreaView, TouchableOpacity,
   ScrollView, Alert, TextInput, ActivityIndicator,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { supabase } from '../config/supabase';
 import stationsData from '../data/tokaido.json';
 
@@ -16,7 +17,7 @@ const directionNameMap: Record<string, string> = {};
   });
 });
 
-type AdminTab = 'submissions' | 'users';
+type AdminTab = 'submissions' | 'users' | 'formations';
 type StatusFilter = 'pending' | 'approved' | 'rejected';
 
 interface AdminSubmission {
@@ -45,12 +46,98 @@ const STATUS_LABEL: Record<StatusFilter, string> = {
 };
 
 export default function AdminScreen() {
+  const insets = useSafeAreaInsets();
   const [tab, setTab] = useState<AdminTab>('submissions');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('pending');
   const [submissions, setSubmissions] = useState<AdminSubmission[]>([]);
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(false);
   const [pointInputs, setPointInputs] = useState<Record<string, string>>({});
+
+  // ===== 選択モード =====
+  // ===== 選択モード =====
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  // ===== 初期データ管理 =====
+  // JSONから施設データがある編成を全て抽出
+  const allFormations = (() => {
+    const list: { stationId: string; stationName: string; directionId: string; directionName: string; cars: number; label: string }[] = [];
+    (stationsData as any).stations.forEach((s: any) => {
+      s.directions.forEach((d: any) => {
+        d.formations.forEach((f: any) => {
+          if (f.facilities && f.facilities.length > 0) {
+            list.push({
+              stationId: s.stationId, stationName: s.stationName,
+              directionId: d.directionId, directionName: d.directionName,
+              cars: f.cars, label: f.label,
+            });
+          }
+        });
+      });
+    });
+    return list;
+  })();
+  const [hiddenKeys, setHiddenKeys] = useState<Set<string>>(new Set());
+
+  const formationKey = (stationId: string, directionId: string, cars: number) =>
+    `${stationId}__${directionId}__${cars}`;
+
+  const loadHiddenFormations = async () => {
+    setLoading(true);
+    const { data, error } = await supabase.from('hidden_formations').select('station_id, direction_id, cars');
+    if (error) Alert.alert('取得エラー', error.message);
+    const keys = new Set((data ?? []).map((r: any) => formationKey(r.station_id, r.direction_id, r.cars)));
+    setHiddenKeys(keys);
+    setLoading(false);
+  };
+
+  const handleToggleFormation = async (f: typeof allFormations[0]) => {
+    const key = formationKey(f.stationId, f.directionId, f.cars);
+    const isHidden = hiddenKeys.has(key);
+    if (isHidden) {
+      // 復元
+      const { error } = await supabase.from('hidden_formations').delete()
+        .eq('station_id', f.stationId).eq('direction_id', f.directionId).eq('cars', f.cars);
+      if (error) { Alert.alert('エラー', error.message); return; }
+      setHiddenKeys(prev => { const next = new Set(prev); next.delete(key); return next; });
+    } else {
+      // 非表示
+      const { error } = await supabase.from('hidden_formations')
+        .insert({ station_id: f.stationId, direction_id: f.directionId, cars: f.cars });
+      if (error) { Alert.alert('エラー', error.message); return; }
+      setHiddenKeys(prev => new Set([...prev, key]));
+    }
+  };
+
+  const handleHideAll = () => {
+    const visibleCount = allFormations.filter(f => !hiddenKeys.has(formationKey(f.stationId, f.directionId, f.cars))).length;
+    if (visibleCount === 0) return;
+    Alert.alert('全件非表示', `初期データ ${visibleCount} 件をすべてホームから非表示にしますか？`, [
+      { text: 'キャンセル', style: 'cancel' },
+      { text: '非表示にする', style: 'destructive', onPress: async () => {
+        const rows = allFormations
+          .filter(f => !hiddenKeys.has(formationKey(f.stationId, f.directionId, f.cars)))
+          .map(f => ({ station_id: f.stationId, direction_id: f.directionId, cars: f.cars }));
+        const { error } = await supabase.from('hidden_formations').insert(rows);
+        if (error) { Alert.alert('エラー', error.message); return; }
+        setHiddenKeys(new Set(allFormations.map(f => formationKey(f.stationId, f.directionId, f.cars))));
+        Alert.alert('完了', `${visibleCount}件を非表示にしました。`);
+      }},
+    ]);
+  };
+
+  // 選択モード終了時にリセット
+  const exitSelectionMode = () => {
+    setSelectionMode(false);
+    setSelectedIds(new Set());
+  };
+
+  // フィルター切り替え時に選択モードをリセット
+  const changeFilter = (s: StatusFilter) => {
+    exitSelectionMode();
+    setStatusFilter(s);
+  };
 
   // ===== 投稿一覧取得 =====
   const loadSubmissions = async () => {
@@ -80,8 +167,10 @@ export default function AdminScreen() {
   };
 
   useEffect(() => {
+    exitSelectionMode();
     if (tab === 'submissions') loadSubmissions();
-    else loadUsers();
+    else if (tab === 'users') loadUsers();
+    else if (tab === 'formations') loadHiddenFormations();
   }, [tab, statusFilter]);
 
   // ===== 承認 =====
@@ -91,9 +180,7 @@ export default function AdminScreen() {
     });
     if (error) { Alert.alert('エラー', error.message); return; }
     setSubmissions(prev => prev.filter(s => s.id !== sub.id));
-    const msg = '投稿を承認しました。投稿者に +50pt 付与しました。';
-    if (typeof window !== 'undefined') window.alert(msg);
-    else Alert.alert('承認完了', msg);
+    Alert.alert('承認完了', '投稿を承認しました。投稿者に +50pt 付与しました。');
   };
 
   // ===== 却下 =====
@@ -105,21 +192,78 @@ export default function AdminScreen() {
     setSubmissions(prev => prev.filter(s => s.id !== sub.id));
   };
 
-  // ===== 削除 =====
+  // ===== 1件削除 =====
   const handleDelete = (sub: AdminSubmission) => {
-    const msg = 'この投稿を完全に削除しますか？';
-    const doDelete = async () => {
-      // SECURITY DEFINER関数でRLSをバイパスして削除
-      const { error } = await supabase.rpc('admin_delete_submission', {
-        p_submission_id: sub.id,
-      });
-      if (error) { Alert.alert('エラー', error.message); return; }
-      setSubmissions(prev => prev.filter(s => s.id !== sub.id));
-    };
-    Alert.alert('削除確認', msg, [
+    Alert.alert('削除確認', 'この投稿を完全に削除しますか？', [
       { text: 'キャンセル', style: 'cancel' },
-      { text: '削除する', style: 'destructive', onPress: doDelete },
+      {
+        text: '削除する', style: 'destructive', onPress: async () => {
+          const { error } = await supabase.rpc('admin_delete_submission', {
+            p_submission_id: sub.id,
+          });
+          if (error) { Alert.alert('エラー', error.message); return; }
+          setSubmissions(prev => prev.filter(s => s.id !== sub.id));
+        },
+      },
     ]);
+  };
+
+  // ===== 選択切り替え =====
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  // ===== 選択削除 =====
+  const handleDeleteSelected = () => {
+    const count = selectedIds.size;
+    if (count === 0) return;
+    Alert.alert(
+      '選択削除',
+      `選択した ${count} 件を削除しますか？`,
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        {
+          text: `${count}件を削除`, style: 'destructive', onPress: async () => {
+            const ids = Array.from(selectedIds);
+            const { error } = await supabase.rpc('admin_delete_submissions_by_ids', {
+              p_ids: ids,
+            });
+            if (error) { Alert.alert('エラー', error.message); return; }
+            setSubmissions(prev => prev.filter(s => !selectedIds.has(s.id)));
+            exitSelectionMode();
+            Alert.alert('完了', `${count}件を削除しました。`);
+          },
+        },
+      ],
+    );
+  };
+
+  // ===== 全件削除 =====
+  const handleDeleteAll = () => {
+    const count = submissions.length;
+    if (count === 0) return;
+    Alert.alert(
+      '全件削除',
+      `${STATUS_LABEL[statusFilter]} の投稿 ${count} 件をすべて削除しますか？\nこの操作は元に戻せません。`,
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        {
+          text: '全件削除する', style: 'destructive', onPress: async () => {
+            const { error } = await supabase.rpc('admin_delete_submissions_by_status', {
+              p_status: statusFilter,
+            });
+            if (error) { Alert.alert('エラー', error.message); return; }
+            setSubmissions([]);
+            exitSelectionMode();
+            Alert.alert('完了', `${count}件をすべて削除しました。`);
+          },
+        },
+      ],
+    );
   };
 
   // ===== ポイント設定 =====
@@ -136,15 +280,13 @@ export default function AdminScreen() {
     if (error) { Alert.alert('エラー', error.message); return; }
     setUsers(prev => prev.map(u => u.id === user.id ? { ...u, points: Math.max(0, val) } : u));
     setPointInputs(prev => ({ ...prev, [user.id]: '' }));
-    const msg = `${user.nickname ?? 'ユーザー'} のポイントを ${Math.max(0, val)}pt に設定しました。`;
-    if (typeof window !== 'undefined') window.alert(msg);
-    else Alert.alert('更新完了', msg);
+    Alert.alert('更新完了', `${user.nickname ?? 'ユーザー'} のポイントを ${Math.max(0, val)}pt に設定しました。`);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       {/* ヘッダー */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <Text style={styles.headerTitle}>🔧 管理者画面</Text>
       </View>
 
@@ -166,6 +308,14 @@ export default function AdminScreen() {
             👥 ユーザー管理
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabButton, tab === 'formations' && styles.tabButtonActive]}
+          onPress={() => setTab('formations')}
+        >
+          <Text style={[styles.tabText, tab === 'formations' && styles.tabTextActive]}>
+            🗂 初期データ
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* ===== 投稿審査タブ ===== */}
@@ -177,7 +327,7 @@ export default function AdminScreen() {
               <TouchableOpacity
                 key={s}
                 style={[styles.filterButton, statusFilter === s && styles.filterButtonActive]}
-                onPress={() => setStatusFilter(s)}
+                onPress={() => changeFilter(s)}
               >
                 <Text style={[styles.filterText, statusFilter === s && styles.filterTextActive]}>
                   {STATUS_LABEL[s]}
@@ -186,6 +336,69 @@ export default function AdminScreen() {
             ))}
           </View>
 
+          {/* 操作ツールバー */}
+          {!loading && submissions.length > 0 && (
+            <View style={styles.toolbarRow}>
+              {selectionMode ? (
+                <>
+                  {/* 選択モード中 */}
+                  <Text style={styles.selectedCount}>
+                    {selectedIds.size}件選択中
+                  </Text>
+                  <View style={styles.toolbarButtons}>
+                    <TouchableOpacity
+                      style={styles.toolbarBtn}
+                      onPress={() => {
+                        // 全選択 / 全解除
+                        if (selectedIds.size === submissions.length) {
+                          setSelectedIds(new Set());
+                        } else {
+                          setSelectedIds(new Set(submissions.map(s => s.id)));
+                        }
+                      }}
+                    >
+                      <Text style={styles.toolbarBtnText}>
+                        {selectedIds.size === submissions.length ? '全解除' : '全選択'}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.toolbarBtn, styles.toolbarBtnDanger, selectedIds.size === 0 && styles.toolbarBtnDisabled]}
+                      onPress={handleDeleteSelected}
+                      disabled={selectedIds.size === 0}
+                    >
+                      <Text style={[styles.toolbarBtnText, styles.toolbarBtnTextDanger]}>
+                        🗑 選択削除 ({selectedIds.size})
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.toolbarBtn} onPress={exitSelectionMode}>
+                      <Text style={styles.toolbarBtnText}>キャンセル</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              ) : (
+                <>
+                  {/* 通常モード */}
+                  <View style={styles.toolbarButtons}>
+                    <TouchableOpacity
+                      style={styles.toolbarBtn}
+                      onPress={() => setSelectionMode(true)}
+                    >
+                      <Text style={styles.toolbarBtnText}>☑ 選択モード</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.toolbarBtn, styles.toolbarBtnDanger]}
+                      onPress={handleDeleteAll}
+                    >
+                      <Text style={[styles.toolbarBtnText, styles.toolbarBtnTextDanger]}>
+                        🗑 全件削除 ({submissions.length})
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              )}
+            </View>
+          )}
+
           {loading ? (
             <ActivityIndicator style={{ marginTop: 40 }} size="large" color="#E65100" />
           ) : (
@@ -193,56 +406,83 @@ export default function AdminScreen() {
               {submissions.length === 0 && (
                 <Text style={styles.emptyText}>該当する投稿はありません</Text>
               )}
-              {submissions.map((sub) => (
-                <View key={sub.id} style={styles.subCard}>
-                  {/* 投稿情報 */}
-                  <View style={styles.subInfo}>
-                    <Text style={styles.subStation}>
-                      {stationNameMap[sub.station_id] ?? sub.station_id}
-                    </Text>
-                    <Text style={styles.subMeta}>
-                      {directionNameMap[sub.direction_id] ?? sub.direction_id} › {sub.cars}両
-                    </Text>
-                    {sub.facilities?.[0] && (
-                      <Text style={styles.subFacility}>
-                        {sub.facilities[0].car}号車 {sub.facilities[0].door}番目ドア・{sub.facilities[0].name}
+              {submissions.map((sub) => {
+                const isSelected = selectedIds.has(sub.id);
+                // 投稿情報の中身（選択モード・通常モード共通）
+                const cardContent = (
+                  <View style={styles.subCardInner}>
+                    {/* チェックボックス（選択モード時のみ） */}
+                    {selectionMode && (
+                      <View style={[styles.checkbox, isSelected && styles.checkboxChecked]}>
+                        {isSelected && <Text style={styles.checkmark}>✓</Text>}
+                      </View>
+                    )}
+                    {/* 投稿情報 */}
+                    <View style={styles.subInfo}>
+                      <Text style={styles.subStation}>
+                        {stationNameMap[sub.station_id] ?? sub.station_id}
                       </Text>
-                    )}
-                    <Text style={styles.subUser}>
-                      投稿者: {sub.users?.nickname ?? '（未設定）'}
-                    </Text>
-                    <Text style={styles.subDate}>
-                      {new Date(sub.created_at).toLocaleDateString('ja-JP')}
-                    </Text>
+                      <Text style={styles.subMeta}>
+                        {directionNameMap[sub.direction_id] ?? sub.direction_id} › {sub.cars}両
+                      </Text>
+                      {sub.facilities?.[0] && (
+                        <Text style={styles.subFacility}>
+                          {sub.facilities[0].car}号車 {sub.facilities[0].door}番目ドア・{sub.facilities[0].name}
+                        </Text>
+                      )}
+                      <Text style={styles.subUser}>
+                        投稿者: {sub.users?.nickname ?? '（未設定）'}
+                      </Text>
+                      <Text style={styles.subDate}>
+                        {new Date(sub.created_at).toLocaleDateString('ja-JP')}
+                      </Text>
+                    </View>
                   </View>
+                );
 
-                  {/* 操作ボタン */}
-                  <View style={styles.actionButtons}>
-                    {sub.status === 'pending' && (
-                      <>
-                        <TouchableOpacity
-                          style={[styles.actionBtn, styles.approveBtn]}
-                          onPress={() => handleApprove(sub)}
-                        >
-                          <Text style={styles.actionBtnText}>✅ 承認</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={[styles.actionBtn, styles.rejectBtn]}
-                          onPress={() => handleReject(sub)}
-                        >
-                          <Text style={styles.actionBtnText}>❌ 却下</Text>
-                        </TouchableOpacity>
-                      </>
+                return (
+                  // ★ 外側は常にView。ネストされたTouchableOpacity問題を回避
+                  <View key={sub.id} style={[styles.subCard, isSelected && styles.subCardSelected]}>
+                    {selectionMode ? (
+                      // 選択モード：カード全体をタップで選択
+                      <TouchableOpacity onPress={() => toggleSelect(sub.id)} activeOpacity={0.7}>
+                        {cardContent}
+                      </TouchableOpacity>
+                    ) : (
+                      // 通常モード：タップ不要、そのまま表示
+                      cardContent
                     )}
-                    <TouchableOpacity
-                      style={[styles.actionBtn, styles.deleteBtn]}
-                      onPress={() => handleDelete(sub)}
-                    >
-                      <Text style={styles.actionBtnText}>🗑 削除</Text>
-                    </TouchableOpacity>
+
+                    {/* 操作ボタン（通常モード時のみ・ViewのためTouchableOpacityが正常動作） */}
+                    {!selectionMode && (
+                      <View style={styles.actionButtons}>
+                        {sub.status === 'pending' && (
+                          <>
+                            <TouchableOpacity
+                              style={[styles.actionBtn, styles.approveBtn]}
+                              onPress={() => handleApprove(sub)}
+                            >
+                              <Text style={styles.actionBtnText}>✅ 承認</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              style={[styles.actionBtn, styles.rejectBtn]}
+                              onPress={() => handleReject(sub)}
+                            >
+                              <Text style={styles.actionBtnText}>❌ 却下</Text>
+                            </TouchableOpacity>
+                          </>
+                        )}
+                        <TouchableOpacity
+                          style={[styles.actionBtn, styles.deleteBtn]}
+                          onPress={() => handleDelete(sub)}
+                        >
+                          <Text style={styles.actionBtnText}>🗑 削除</Text>
+                        </TouchableOpacity>
+                      </View>
+                    )}
                   </View>
-                </View>
-              ))}
+                );
+              })}
             </ScrollView>
           )}
         </>
@@ -289,6 +529,51 @@ export default function AdminScreen() {
           </ScrollView>
         )
       )}
+      {/* ===== 初期データ管理タブ ===== */}
+      {tab === 'formations' && (
+        loading ? (
+          <ActivityIndicator style={{ marginTop: 40 }} size="large" color="#E65100" />
+        ) : (
+          <>
+            {/* 全件非表示ボタン */}
+            <View style={styles.formationToolbar}>
+              <Text style={styles.formationToolbarInfo}>
+                表示中: {allFormations.filter(f => !hiddenKeys.has(formationKey(f.stationId, f.directionId, f.cars))).length} /
+                全 {allFormations.length} 件
+              </Text>
+              <TouchableOpacity style={[styles.toolbarBtn, styles.toolbarBtnDanger]} onPress={handleHideAll}>
+                <Text style={[styles.toolbarBtnText, styles.toolbarBtnTextDanger]}>🗑 全件非表示</Text>
+              </TouchableOpacity>
+            </View>
+            <ScrollView contentContainerStyle={styles.list}>
+              {allFormations.map((f) => {
+                const key = formationKey(f.stationId, f.directionId, f.cars);
+                const isHidden = hiddenKeys.has(key);
+                return (
+                  <View key={key} style={[styles.formationCard, isHidden && styles.formationCardHidden]}>
+                    <View style={styles.formationInfo}>
+                      <Text style={[styles.formationStation, isHidden && styles.formationTextHidden]}>
+                        {f.stationName}
+                      </Text>
+                      <Text style={[styles.formationMeta, isHidden && styles.formationTextHidden]}>
+                        {f.directionName} · {f.label}
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      style={[styles.toggleBtn, isHidden ? styles.toggleBtnHidden : styles.toggleBtnVisible]}
+                      onPress={() => handleToggleFormation(f)}
+                    >
+                      <Text style={styles.toggleBtnText}>
+                        {isHidden ? '🚫 非表示中' : '✅ 表示中'}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                );
+              })}
+            </ScrollView>
+          </>
+        )
+      )}
     </SafeAreaView>
   );
 }
@@ -296,7 +581,7 @@ export default function AdminScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f5f5' },
   header: {
-    backgroundColor: '#37474F', paddingHorizontal: 16, paddingVertical: 12,
+    backgroundColor: '#37474F', paddingHorizontal: 16, paddingBottom: 12,
   },
   headerTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   tabBar: {
@@ -321,6 +606,24 @@ const styles = StyleSheet.create({
   filterButtonActive: { backgroundColor: '#37474F' },
   filterText: { fontSize: 12, color: '#666' },
   filterTextActive: { color: '#fff', fontWeight: 'bold' },
+
+  // ツールバー
+  toolbarRow: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: 12, paddingVertical: 8,
+    backgroundColor: '#ECEFF1', borderBottomWidth: 1, borderBottomColor: '#ddd',
+  },
+  selectedCount: { fontSize: 13, fontWeight: 'bold', color: '#37474F' },
+  toolbarButtons: { flexDirection: 'row', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end', flex: 1 },
+  toolbarBtn: {
+    paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16,
+    backgroundColor: '#fff', borderWidth: 1, borderColor: '#ccc',
+  },
+  toolbarBtnDanger: { borderColor: '#EF9A9A', backgroundColor: '#FFEBEE' },
+  toolbarBtnDisabled: { opacity: 0.4 },
+  toolbarBtnText: { fontSize: 12, color: '#555', fontWeight: 'bold' },
+  toolbarBtnTextDanger: { color: '#C62828' },
+
   list: { padding: 12, gap: 10 },
   emptyText: { textAlign: 'center', color: '#aaa', paddingTop: 40, fontSize: 15 },
 
@@ -328,9 +631,19 @@ const styles = StyleSheet.create({
   subCard: {
     backgroundColor: '#fff', borderRadius: 10, padding: 14,
     shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
-    gap: 10,
+    gap: 10, borderWidth: 2, borderColor: 'transparent',
   },
-  subInfo: { gap: 3 },
+  subCardSelected: {
+    borderColor: '#1565C0', backgroundColor: '#E3F2FD',
+  },
+  subCardInner: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
+  checkbox: {
+    width: 24, height: 24, borderRadius: 12, borderWidth: 2, borderColor: '#90A4AE',
+    alignItems: 'center', justifyContent: 'center', marginTop: 2,
+  },
+  checkboxChecked: { backgroundColor: '#1565C0', borderColor: '#1565C0' },
+  checkmark: { color: '#fff', fontSize: 14, fontWeight: 'bold' },
+  subInfo: { flex: 1, gap: 3 },
   subStation: { fontSize: 18, fontWeight: 'bold', color: '#1a1a1a' },
   subMeta: { fontSize: 13, color: '#555' },
   subFacility: { fontSize: 12, color: '#666' },
@@ -365,4 +678,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingVertical: 10,
   },
   pointBtnText: { color: '#fff', fontWeight: 'bold', fontSize: 13 },
+
+  // 初期データ管理
+  formationToolbar: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: 12, paddingVertical: 8,
+    backgroundColor: '#ECEFF1', borderBottomWidth: 1, borderBottomColor: '#ddd',
+  },
+  formationToolbarInfo: { fontSize: 13, color: '#555' },
+  formationCard: {
+    backgroundColor: '#fff', borderRadius: 10, padding: 14,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
+  },
+  formationCardHidden: { backgroundColor: '#F5F5F5', opacity: 0.7 },
+  formationInfo: { flex: 1, gap: 3 },
+  formationStation: { fontSize: 16, fontWeight: 'bold', color: '#1a1a1a' },
+  formationMeta: { fontSize: 12, color: '#666' },
+  formationTextHidden: { color: '#aaa' },
+  toggleBtn: {
+    paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20,
+    borderWidth: 1, alignItems: 'center', minWidth: 90,
+  },
+  toggleBtnVisible: { backgroundColor: '#E8F5E9', borderColor: '#A5D6A7' },
+  toggleBtnHidden: { backgroundColor: '#FFEBEE', borderColor: '#FFCDD2' },
+  toggleBtnText: { fontSize: 12, fontWeight: 'bold', color: '#333' },
 });

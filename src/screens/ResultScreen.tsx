@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Station, Direction, Formation, FacilityType, Facility } from '../types/station';
 import { supabase } from '../config/supabase';
 import TrainDiagram from '../components/TrainDiagram';
@@ -30,13 +31,25 @@ const FACILITY_COLORS: Record<FacilityType, string> = {
 };
 
 export default function ResultScreen({ station, direction, formation, onBack }: Props) {
-  const [facilities, setFacilities] = useState<Facility[]>(formation.facilities);
+  const insets = useSafeAreaInsets();
+  const [facilities, setFacilities] = useState<Facility[]>([]);
   const [loading, setLoading] = useState(true);
   const [fromCrowd, setFromCrowd] = useState(false);
 
   useEffect(() => {
-    const fetchApproved = async () => {
+    const fetchData = async () => {
       try {
+        // ① 初期データの非表示設定を確認
+        const { data: hiddenData } = await supabase
+          .from('hidden_formations')
+          .select('station_id')
+          .eq('station_id', station.stationId)
+          .eq('direction_id', direction.directionId)
+          .eq('cars', formation.cars)
+          .maybeSingle();
+        const isHidden = !!hiddenData;
+
+        // ② 承認済み投稿を取得
         const { data } = await supabase
           .from('submissions')
           .select('facilities')
@@ -48,22 +61,28 @@ export default function ResultScreen({ station, direction, formation, onBack }: 
           .limit(1);
 
         if (data && data.length > 0) {
+          // 承認済み投稿があればそちらを優先
           setFacilities(data[0].facilities as Facility[]);
           setFromCrowd(true);
+        } else if (!isHidden) {
+          // 非表示設定がなければJSONの初期データを使用
+          setFacilities(formation.facilities);
         }
+        // isHidden かつ承認済みなしの場合は空のまま
       } catch (e) {
-        // エラー時はローカルデータをそのまま使用
+        // エラー時はJSONデータをフォールバック
+        setFacilities(formation.facilities);
       } finally {
         setLoading(false);
       }
     };
-    fetchApproved();
+    fetchData();
   }, [station.stationId, direction.directionId, formation.cars]);
 
   return (
     <SafeAreaView style={styles.container}>
       {/* ヘッダー */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <TouchableOpacity onPress={onBack} style={styles.backButton}>
           <Text style={styles.backText}>← 戻る</Text>
         </TouchableOpacity>
@@ -120,7 +139,7 @@ export default function ResultScreen({ station, direction, formation, onBack }: 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f5f5' },
   header: {
-    backgroundColor: '#E65100', paddingHorizontal: 16, paddingVertical: 12,
+    backgroundColor: '#E65100', paddingHorizontal: 16, paddingBottom: 12,
     flexDirection: 'row', alignItems: 'center', gap: 12,
   },
   backButton: { paddingRight: 8 },

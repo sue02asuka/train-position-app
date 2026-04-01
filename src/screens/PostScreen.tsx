@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
   SafeAreaView, Alert, ActivityIndicator,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { supabase } from '../config/supabase';
 import type { Station, Direction, FacilityType } from '../types/station';
 import stationsData from '../data/tokaido.json';
@@ -18,6 +19,7 @@ const FACILITY_OPTIONS: { type: FacilityType; label: string; icon: string }[] = 
 type Step = 'station' | 'direction' | 'formation' | 'facility';
 
 export default function PostScreen() {
+  const insets = useSafeAreaInsets();
   const [step, setStep] = useState<Step>('station');
   const [selectedStation, setSelectedStation] = useState<Station | null>(null);
   const [selectedDirection, setSelectedDirection] = useState<Direction | null>(null);
@@ -71,11 +73,7 @@ export default function PostScreen() {
 
           if (isDuplicate) {
             const msg = `この設備はすでに投稿済みです。\n（${selectedStation.stationName} ${selectedDirection.directionName} ${selectedCars}両 ${FACILITY_OPTIONS.find(f => f.type === facilityType)?.label} ${car}号車${door}番目ドア）`;
-            if (typeof window !== 'undefined') {
-              window.alert(msg);
-            } else {
-              Alert.alert('投稿済み', msg);
-            }
+            Alert.alert('投稿済み', msg);
             return;
           }
         }
@@ -106,12 +104,7 @@ export default function PostScreen() {
         ? '投稿完了！管理者投稿のため即時反映されました✅'
         : '投稿完了！＋10ポイント獲得しました🎉';
 
-      if (typeof window !== 'undefined') {
-        window.alert(successMsg);
-        reset();
-      } else {
-        Alert.alert('投稿完了！', successMsg, [{ text: 'OK', onPress: reset }]);
-      }
+      Alert.alert('投稿完了！', successMsg, [{ text: 'OK', onPress: reset }]);
     } catch (e: any) {
       Alert.alert('エラー', e.message);
     } finally {
@@ -123,7 +116,7 @@ export default function PostScreen() {
   if (step !== 'facility') {
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
+        <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
           <Text style={styles.headerTitle}>📝 乗車位置を投稿</Text>
           {step !== 'station' && (
             <TouchableOpacity onPress={reset}><Text style={styles.resetText}>最初から</Text></TouchableOpacity>
@@ -239,7 +232,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f5f5' },
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    backgroundColor: '#1565C0', paddingHorizontal: 16, paddingVertical: 12,
+    backgroundColor: '#1565C0', paddingHorizontal: 16, paddingBottom: 12,
   },
   headerTitle: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   resetText: { color: '#fff', fontSize: 14 },
