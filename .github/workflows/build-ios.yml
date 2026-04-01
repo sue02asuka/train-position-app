@@ -33,9 +33,11 @@ jobs:
 
       - name: Build iOS (unsigned)
         run: |
-          WORKSPACE=$(ls ios/*.xcworkspace | head -1)
+          WORKSPACE=$(ls -d ios/*.xcworkspace | head -1)
           SCHEME=$(basename "$WORKSPACE" .xcworkspace)
           echo "Building workspace: $WORKSPACE  scheme: $SCHEME"
+          echo "Available schemes:"
+          xcodebuild -workspace "$WORKSPACE" -list 2>&1 || true
           xcodebuild \
             -workspace "$WORKSPACE" \
             -scheme "$SCHEME" \
