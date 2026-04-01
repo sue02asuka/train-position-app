@@ -53,16 +53,22 @@ jobs:
             CONFIGURATION_BUILD_DIR="${PWD}/build/iphoneos" \
             | xcpretty || true
           # xcpretty がなくても続行するため || true
-          ls build/iphoneos/
+          echo "Build output:"
+          find build/iphoneos -maxdepth 1 | head -20
         env:
           EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
           EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
 
       - name: Package IPA
         run: |
-          mkdir -p Payload
-          APP=$(ls build/iphoneos/*.app | head -1)
+          APP=$(find build/iphoneos -maxdepth 1 -name "*.app" -type d | head -1)
+          if [ -z "$APP" ]; then
+            echo "ERROR: .app not found. Listing build directory:"
+            find build/ -maxdepth 3 | head -30
+            exit 1
+          fi
           echo "Packaging: $APP"
+          mkdir -p Payload
           cp -r "$APP" Payload/
           zip -r output.ipa Payload
           echo "IPA size: $(du -sh output.ipa)"
